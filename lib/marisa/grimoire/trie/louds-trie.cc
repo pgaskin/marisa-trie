@@ -75,7 +75,7 @@ void LoudsTrie::reverse_lookup(Agent &agent) const {
   state.reverse_lookup_init();
 
   state.set_node_id(
-      terminal_flags_.select1(static_cast<uint32_t>(agent.query().id())));
+      terminal_flags_.select1(agent.query().id()));
   if (state.node_id() == 0) {
     agent.set_key(state.key_buf().data(), state.key_buf().size());
     agent.set_key(agent.query().id());

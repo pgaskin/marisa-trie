@@ -55,11 +55,10 @@ class Agent {
   }
   void set_key(const char *ptr, std::size_t length) {
     assert((ptr != nullptr) || (length == 0));
-    assert(length <= UINT32_MAX);
+    MARISA_THROW_IF(length >= UINT32_MAX, std::length_error);
     key_.set_str(ptr, length);
   }
   void set_key(marisa_key_t id) {
-    assert(id <= UINT32_MAX);
     key_.set_id(id);
   }
 

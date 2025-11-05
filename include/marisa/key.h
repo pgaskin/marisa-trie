@@ -28,19 +28,18 @@ class Key {
     while (str[length] != '\0') {
       ++length;
     }
-    assert(length <= UINT32_MAX);
+    MARISA_THROW_IF(length >= UINT32_MAX, std::length_error);
     ptr_ = str;
     length_ = static_cast<uint32_t>(length);
   }
   void set_str(const char *ptr, std::size_t length) {
     assert((ptr != nullptr) || (length == 0));
-    assert(length <= UINT32_MAX);
+    MARISA_THROW_IF(length >= UINT32_MAX, std::length_error);
     ptr_ = ptr;
     length_ = static_cast<uint32_t>(length);
   }
   void set_id(marisa_key_t id) {
-    assert(id <= UINT32_MAX);
-    union_.id = static_cast<uint32_t>(id);
+    union_.id = id;
   }
   void set_weight(float weight) {
     union_.weight = weight;
