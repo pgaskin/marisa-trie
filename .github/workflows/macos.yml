@@ -2,15 +2,6 @@ name: macOS CI
 
 on:
   push:
-    branches: [master, develop]
-    paths-ignore:
-      - '*.md'
-      - 'docs/**'
-  pull_request:
-    types: [opened, synchronize]
-    paths-ignore:
-      - '*.md'
-      - 'docs/**'
   workflow_dispatch:
 
 concurrency:

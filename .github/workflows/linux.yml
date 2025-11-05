@@ -2,15 +2,6 @@ name: Linux CI
 
 on:
   push:
-    branches: [master, develop]
-    paths-ignore:
-      - '*.md'
-      - 'docs/**'
-  pull_request:
-    types: [opened, synchronize]
-    paths-ignore:
-      - '*.md'
-      - 'docs/**'
   workflow_dispatch:
 
 concurrency:
@@ -103,10 +94,3 @@ jobs:
         run: |
           lcov --capture --directory . --output-file coverage.info
           lcov --remove coverage.info '/usr/*' --output-file coverage.info
-
-      - name: Upload Code Coverage
-        if: matrix.coverage
-        uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2.3.6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: coverage.info
