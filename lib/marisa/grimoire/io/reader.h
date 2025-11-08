@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 #include "marisa/base.h"
+#include "marisa/iostub.h"
 
 namespace marisa::grimoire::io {
 
@@ -21,6 +22,7 @@ class Reader {
   void open(std::FILE *file);
   void open(int fd);
   void open(std::istream &stream);
+  void open(marisa::Reader &impl);
 
   template <typename T>
   void read(T *obj) {
@@ -48,11 +50,13 @@ class Reader {
   int fd_ = -1;
   std::istream *stream_ = nullptr;
   bool needs_fclose_ = false;
+  marisa::Reader *impl_ = nullptr;
 
   void open_(const char *filename);
   void open_(std::FILE *file);
   void open_(int fd);
   void open_(std::istream &stream);
+  void open_(marisa::Reader &impl);
 
   void read_data(void *buf, std::size_t size);
 };

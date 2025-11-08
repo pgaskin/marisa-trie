@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "marisa/agent.h"   // IWYU pragma: export
+#include "marisa/iostub.h"  // IWYU pragma: export
 #include "marisa/keyset.h"  // IWYU pragma: export
 
 namespace marisa {
@@ -33,9 +34,11 @@ class Trie {
 
   void load(const char *filename);
   void read(int fd);
+  void read(Reader &impl);
 
   void save(const char *filename) const;
   void write(int fd) const;
+  void write(Writer &impl);
 
   bool lookup(Agent &agent) const;
   void reverse_lookup(Agent &agent) const;
