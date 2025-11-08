@@ -50,6 +50,12 @@ void Writer::open(std::ostream &stream) {
   swap(temp);
 }
 
+void Writer::open(marisa::Writer &impl) {
+  Writer temp;
+  temp.open_(impl);
+  swap(temp);
+}
+
 void Writer::clear() noexcept {
   Writer().swap(*this);
 }
@@ -59,11 +65,16 @@ void Writer::swap(Writer &rhs) noexcept {
   std::swap(fd_, rhs.fd_);
   std::swap(stream_, rhs.stream_);
   std::swap(needs_fclose_, rhs.needs_fclose_);
+  std::swap(impl_, rhs.impl_);
 }
 
 void Writer::seek(std::size_t size) {
   MARISA_THROW_IF(!is_open(), std::logic_error);
   if (size == 0) {
+    return;
+  }
+  if (impl_ != nullptr) {
+    impl_->seek(size);
     return;
   }
   if (size <= 16) {
@@ -80,7 +91,8 @@ void Writer::seek(std::size_t size) {
 }
 
 bool Writer::is_open() const {
-  return (file_ != nullptr) || (fd_ != -1) || (stream_ != nullptr);
+  return (file_ != nullptr) || (fd_ != -1) || (stream_ != nullptr) ||
+         (impl_ != nullptr);
 }
 
 void Writer::open_(const char *filename) {
@@ -110,9 +122,17 @@ void Writer::open_(std::ostream &stream) {
   stream_ = &stream;
 }
 
+void Writer::open_(marisa::Writer &impl) {
+  impl_ = &impl;
+}
+
 void Writer::write_data(const void *data, std::size_t size) {
   MARISA_THROW_IF(!is_open(), std::logic_error);
   if (size == 0) {
+    return;
+  }
+  if (impl_ != nullptr) {
+    impl_->write(data, size);
     return;
   }
   if (fd_ != -1) {

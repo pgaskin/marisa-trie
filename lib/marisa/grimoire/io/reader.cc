@@ -50,6 +50,12 @@ void Reader::open(std::istream &stream) {
   swap(temp);
 }
 
+void Reader::open(marisa::Reader &impl) {
+  Reader temp;
+  temp.open_(impl);
+  swap(temp);
+}
+
 void Reader::clear() noexcept {
   Reader().swap(*this);
 }
@@ -59,12 +65,16 @@ void Reader::swap(Reader &rhs) noexcept {
   std::swap(fd_, rhs.fd_);
   std::swap(stream_, rhs.stream_);
   std::swap(needs_fclose_, rhs.needs_fclose_);
+  std::swap(impl_, rhs.impl_);
 }
 
 void Reader::seek(std::size_t size) {
   MARISA_THROW_IF(!is_open(), std::logic_error);
   if (size == 0) {
     return;
+  }
+  if (impl_ != nullptr) {
+    impl_->seek(size);
   }
   if (size <= 16) {
     char buf[16];
@@ -80,7 +90,8 @@ void Reader::seek(std::size_t size) {
 }
 
 bool Reader::is_open() const {
-  return (file_ != nullptr) || (fd_ != -1) || (stream_ != nullptr);
+  return (file_ != nullptr) || (fd_ != -1) || (stream_ != nullptr) ||
+         (impl_ != nullptr);
 }
 
 void Reader::open_(const char *filename) {
@@ -110,10 +121,17 @@ void Reader::open_(std::istream &stream) {
   stream_ = &stream;
 }
 
+void Reader::open_(marisa::Reader &impl) {
+  impl_ = &impl;
+}
+
 void Reader::read_data(void *buf, std::size_t size) {
   MARISA_THROW_IF(!is_open(), std::logic_error);
   if (size == 0) {
     return;
+  }
+  if (impl_ != nullptr) {
+    impl_->read(buf, size);
   }
   if (fd_ != -1) {
     while (size != 0) {

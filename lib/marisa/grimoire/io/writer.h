@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 #include "marisa/base.h"
+#include "marisa/iostub.h"
 
 namespace marisa::grimoire::io {
 
@@ -21,6 +22,7 @@ class Writer {
   void open(std::FILE *file);
   void open(int fd);
   void open(std::ostream &stream);
+  void open(marisa::Writer &impl);
 
   template <typename T>
   void write(const T &obj) {
@@ -47,11 +49,13 @@ class Writer {
   int fd_ = -1;
   std::ostream *stream_ = nullptr;
   bool needs_fclose_ = false;
+  marisa::Writer *impl_ = nullptr;
 
   void open_(const char *filename);
   void open_(std::FILE *file);
   void open_(int fd);
   void open_(std::ostream &stream);
+  void open_(marisa::Writer &impl);
 
   void write_data(const void *data, std::size_t size);
 };

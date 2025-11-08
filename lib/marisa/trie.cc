@@ -5,6 +5,7 @@
 
 #include "marisa/grimoire/trie.h"
 #include "marisa/iostream.h"
+#include "marisa/iostub.h"
 #include "marisa/stdio.h"
 
 namespace marisa {
@@ -68,6 +69,15 @@ void Trie::read(int fd) {
   trie_.swap(temp);
 }
 
+void Trie::read(Reader &impl) {
+  std::unique_ptr<grimoire::LoudsTrie> temp(new grimoire::LoudsTrie);
+
+  grimoire::Reader reader;
+  reader.open(impl);
+  temp->read(reader);
+  trie_.swap(temp);
+}
+
 void Trie::save(const char *filename) const {
   MARISA_THROW_IF(trie_ == nullptr, std::logic_error);
   MARISA_THROW_IF(filename == nullptr, std::invalid_argument);
@@ -83,6 +93,12 @@ void Trie::write(int fd) const {
 
   grimoire::Writer writer;
   writer.open(fd);
+  trie_->write(writer);
+}
+
+void Trie::write(Writer &impl) {
+  grimoire::Writer writer;
+  writer.open(impl);
   trie_->write(writer);
 }
 
