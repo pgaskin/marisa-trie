@@ -41,8 +41,10 @@ Mapper::~Mapper() {
 #else   // (defined _WIN32) || (defined _WIN64)
 Mapper::~Mapper() {
   if (origin_ != MAP_FAILED) {
+    printf("unmap %p\n", origin_);
     ::munmap(origin_, size_);
-  }
+  } else
+    printf("no unmap %p\n", origin_);
 
   if (fd_ != -1) {
     ::close(fd_);
@@ -167,6 +169,7 @@ void Mapper::open_(const char *filename, int flags) {
   origin_ = ::mmap(nullptr, size_, PROT_READ, map_flags, fd_, 0);
   MARISA_THROW_SYSTEM_ERROR_IF(origin_ == MAP_FAILED, errno,
                                std::generic_category(), "mmap");
+  printf("map %p\n", origin_);
 
   ptr_ = static_cast<const char *>(origin_);
   avail_ = size_;

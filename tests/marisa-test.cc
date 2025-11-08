@@ -415,6 +415,7 @@ void TestTrie(int num_tries, marisa::TailMode tail_mode,
 
   trie.clear();
   trie.mmap("marisa-test.dat");
+  printf("started\n");
 
   ASSERT(trie.num_tries() == static_cast<std::size_t>(num_tries));
   ASSERT(trie.num_keys() <= keyset.size());
@@ -427,6 +428,7 @@ void TestTrie(int num_tries, marisa::TailMode tail_mode,
   {
     std::stringstream stream;
     stream << trie;
+    printf("ended1\n");
     trie.clear();
     stream >> trie;
   }
@@ -438,6 +440,7 @@ void TestTrie(int num_tries, marisa::TailMode tail_mode,
   ASSERT(trie.node_order() == node_order);
 
   TestLookup(trie, keyset);
+  printf("ended2\n");
 }
 
 void TestTrie(marisa::TailMode tail_mode, marisa::NodeOrder node_order,

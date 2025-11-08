@@ -6,6 +6,7 @@
 
 #include <fcntl.h>
 #include <marisa/grimoire/io.h>
+#include <marisa/system/file.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -54,8 +55,9 @@ void TestFilename() {
   }
 
   {
+    marisa::system::Mapper file("io-test.dat");
     marisa::grimoire::Mapper mapper;
-    mapper.open("io-test.dat");
+    mapper.open(file.data(), file.size());
 
     std::uint32_t value;
     mapper.map(&value);
@@ -73,8 +75,9 @@ void TestFilename() {
   }
 
   {
+    marisa::system::Mapper file("io-test.dat", MARISA_MAP_POPULATE);
     marisa::grimoire::Mapper mapper;
-    mapper.open("io-test.dat", MARISA_MAP_POPULATE);
+    mapper.open(file.data(), file.size());
 
     std::uint32_t value;
     mapper.map(&value);
@@ -120,8 +123,9 @@ void TestFd() {
     int fd = ::creat("io-test.dat", 0644);
     ASSERT(fd != -1);
 #endif  // _MSC_VER
+    marisa::system::Writer file(fd);
     marisa::grimoire::Writer writer;
-    writer.open(fd);
+    writer.open(file);
 
     std::uint32_t value = 234;
     writer.write(value);
@@ -145,8 +149,9 @@ void TestFd() {
     int fd = ::open("io-test.dat", O_RDONLY);
     ASSERT(fd != -1);
 #endif  // _MSC_VER
+    marisa::system::Reader file(fd);
     marisa::grimoire::Reader reader;
-    reader.open(fd);
+    reader.open(file);
 
     std::uint32_t value;
     reader.read(&value);

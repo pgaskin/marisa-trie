@@ -7,6 +7,7 @@
 #include "marisa/iostream.h"
 #include "marisa/iostub.h"
 #include "marisa/stdio.h"
+#include "marisa/system/file.h"
 
 namespace marisa {
 
@@ -30,9 +31,13 @@ void Trie::mmap(const char *filename, int flags) {
 
   std::unique_ptr<grimoire::LoudsTrie> temp(new grimoire::LoudsTrie);
 
+  system::Mapper file(filename, flags);
+
   grimoire::Mapper mapper;
+  // mapper.open(file.data(), file.size());
   mapper.open(filename, flags);
   temp->map(mapper);
+  printf("werwerwer\n");
   trie_.swap(temp);
 }
 
@@ -63,8 +68,10 @@ void Trie::read(int fd) {
 
   std::unique_ptr<grimoire::LoudsTrie> temp(new grimoire::LoudsTrie);
 
+  system::Reader file(fd);
+
   grimoire::Reader reader;
-  reader.open(fd);
+  reader.open(file);
   temp->read(reader);
   trie_.swap(temp);
 }
@@ -91,8 +98,10 @@ void Trie::write(int fd) const {
   MARISA_THROW_IF(trie_ == nullptr, std::logic_error);
   MARISA_THROW_IF(fd == -1, std::invalid_argument);
 
+  system::Writer file(fd);
+
   grimoire::Writer writer;
-  writer.open(fd);
+  writer.open(file);
   trie_->write(writer);
 }
 

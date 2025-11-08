@@ -185,6 +185,7 @@ add_library(marisa
   lib/marisa/grimoire/vector/pop-count.h
   lib/marisa/grimoire/vector/rank-index.h
   lib/marisa/grimoire/vector/vector.h
+  lib/marisa/system/file.cc
   lib/marisa/keyset.cc
   lib/marisa/trie.cc
 )
